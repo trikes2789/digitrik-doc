@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digitrikdoc TEST</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        /* Stili extra per debugging */
+        .debug-info {
+            background: #1F2937;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 12px;
+            color: #10B981;
+        }
+    </style>
+</head>
+<body>
+    <div class="debug-info">
+        Stato: <span id="status">Caricamento...</span>
+    </div>
+    
+    <div class="main-stage">
+        <div class="paper-card">
+            <h2>Digitrikdoc - Test Semplice</h2>
+            
+            <!-- TABELLA DI PROVA -->
+            <table class="items-table">
+                <thead>
+                    <tr>
+                        <th>Descrizione</th>
+                        <th>Q.tà</th>
+                        <th>Prezzo</th>
+                        <th>IVA</th>
+                        <th>Totale</th>
+                    </tr>
+                </thead>
+                <tbody id="test-items">
+                    <tr>
+                        <td><input type="text" placeholder="Prodotto 1" value="Consulenza"></td>
+                        <td><input type="number" value="1" min="0"></td>
+                        <td><input type="number" value="500" min="0"></td>
+                        <td>
+                            <select>
+                                <option value="22">22%</option>
+                                <option value="10">10%</option>
+                                <option value="0" selected>0%</option>
+                            </select>
+                        </td>
+                        <td class="row-total">500.00€</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <button id="test-add-btn" style="margin: 20px 0; padding: 10px 20px; background: #2563EB; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                <i class="ri-add-line"></i> Aggiungi Riga
+            </button>
+            
+            <div style="margin-top: 30px; padding: 20px; background: #374151; border-radius: 8px;">
+                <h3>Totali:</h3>
+                <div>Imponibile: <span id="test-subtotal">500.00</span>€</div>
+                <div>IVA: <span id="test-tax">0.00</span>€</div>
+                <div style="font-weight: bold; font-size: 1.2em; color: #3B82F6;">TOTALE: <span id="test-total">500.00</span>€</div>
+            </div>
+            
+            <div style="margin-top: 20px; color: #9CA3AF; font-size: 12px;">
+                Se questa versione funziona, possiamo passare alla versione completa.
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // JavaScript semplice che FUNZIONA SEMPRE
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("Digitrikdoc Test - Avviato");
+            document.getElementById('status').textContent = 'Caricato ✅';
+            
+            // Funzione per aggiungere riga
+            document.getElementById('test-add-btn').addEventListener('click', function() {
+                const tbody = document.getElementById('test-items');
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><input type="text" placeholder="Nuovo articolo"></td>
+                    <td><input type="number" value="1" min="0"></td>
+                    <td><input type="number" value="0" min="0"></td>
+                    <td>
+                        <select>
+                            <option value="22">22%</option>
+                            <option value="10">10%</option>
+                            <option value="0" selected>0%</option>
+                        </select>
+                    </td>
+                    <td class="row-total">0.00€</td>
+                `;
+                tbody.appendChild(tr);
+                
+                // Aggiungi event listener ai nuovi campi
+                tr.querySelectorAll('input, select').forEach(el => {
+                    el.addEventListener('input', calculateTestTotals);
+                });
+                
+                calculateTestTotals();
+            });
+            
+            // Funzione per calcolare i totali
+            function calculateTestTotals() {
+                let subtotal = 0;
+                let taxTotal = 0;
+                
+                document.querySelectorAll('#test-items tr').forEach(row => {
+                    const qty = parseFloat(row.querySelector('input[type="number"]:nth-child(1)').value) || 0;
+                    const price = parseFloat(row.querySelector('input[type="number"]:nth-child(2)').value) || 0;
+                    const taxRate = parseFloat(row.querySelector('select').value) || 0;
+                    
+                    const rowTotal = qty * price;
+                    const tax = rowTotal * (taxRate / 100);
+                    
+                    // Aggiorna totale riga
+                    row.querySelector('.row-total').textContent = rowTotal.toFixed(2) + '€';
+                    
+                    subtotal += rowTotal;
+                    taxTotal += tax;
+                });
+                
+                const total = subtotal + taxTotal;
+                
+                // Aggiorna display
+                document.getElementById('test-subtotal').textContent = subtotal.toFixed(2);
+                document.getElementById('test-tax').textContent = taxTotal.toFixed(2);
+                document.getElementById('test-total').textContent = total.toFixed(2);
+            }
+            
+            // Aggiungi event listener ai campi esistenti
+            document.querySelectorAll('#test-items input, #test-items select').forEach(el => {
+                el.addEventListener('input', calculateTestTotals);
+            });
+            
+            // Calcola all'avvio
+            calculateTestTotals();
+            
+            console.log("Test ready - puoi aggiungere righe e modificare i valori");
+        });
+    </script>
+</body>
+</html>

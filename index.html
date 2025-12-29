@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digitrikdoc | Suite Professionale</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body>
+
+    <div class="main-stage">
+        <div id="app" class="paper-card">
+            
+            <!-- HEADER PRINCIPALE -->
+            <header class="header-grid">
+                <div class="brand-area">
+                    <div id="logo-zone" class="logo-uploader">
+                        <i class="ri-image-add-line" style="font-size: 24px; color: var(--text-muted); margin-bottom: 8px;"></i>
+                        <span class="upload-text" style="font-size: 12px; color: var(--text-muted);">Carica Logo</span>
+                        <input type="file" id="logo-input" hidden accept="image/*">
+                    </div>
+                </div>
+                <div class="company-details">
+                    <input type="text" id="comp-name" class="input-stealth big-bold" placeholder="Nome Tua Azienda">
+                    <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 8px;">
+                        <input type="text" id="comp-address" class="input-stealth" placeholder="Indirizzo (Via/Piazza)">
+                        <input type="text" id="comp-city" class="input-stealth" placeholder="CAP Città (Provincia)">
+                        <input type="text" id="comp-contact" class="input-stealth" placeholder="Tel / Email">
+                        <input type="text" id="comp-vat" class="input-stealth" placeholder="P.IVA / C.F.">
+                    </div>
+                </div>
+            </header>
+
+            <hr class="divider">
+
+            <!-- SEZIONE CLIENTE E DOCUMENTO -->
+            <section class="meta-grid">
+                <div class="client-area">
+                    <label class="label-tiny">DESTINATARIO</label>
+                    <div class="client-field-row">
+                        <input type="text" id="client-name" class="input-modern" placeholder="Nome Cliente / Ragione Sociale">
+                    </div>
+                    <div class="client-field-row">
+                        <input type="text" id="client-address" class="input-modern" placeholder="Indirizzo">
+                    </div>
+                    <div style="display: flex; gap: 12px; margin-top: 16px;">
+                        <div style="flex: 2;">
+                            <label class="label-tiny">CITTÀ</label>
+                            <input type="text" id="client-city" class="input-modern" placeholder="Città">
+                        </div>
+                        <div style="flex: 1;">
+                            <label class="label-tiny">P.IVA / C.F.</label>
+                            <input type="text" id="client-vat" class="input-modern" placeholder="P.IVA / C.F.">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="doc-info">
+                    <div class="client-field-row">
+                        <label class="label-tiny">DATA DOCUMENTO</label>
+                        <input type="date" id="doc-date" class="input-modern">
+                    </div>
+                    <div class="client-field-row" style="margin-top: 20px;">
+                        <label class="label-tiny">VALIDITÀ OFFERTA</label>
+                        <input type="text" id="validity-text" class="input-modern" placeholder="Es. 30 Giorni" value="30 Giorni">
+                    </div>
+                </div>
+            </section>
+
+            <!-- CORPO PRINCIPALE - TABELLA -->
+            <main class="document-body">
+                <table class="items-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 40%;">DESCRIZIONE</th>
+                            <th style="width: 10%;">Q.TÀ</th>
+                            <th style="width: 15%;">PREZZO UNIT.</th>
+                            <th style="width: 15%;">IVA %</th>
+                            <th style="width: 15%;" class="text-right">TOTALE RIGA</th>
+                            <th style="width: 5%;"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="items-body">
+                        <!-- Righe verranno aggiunte dinamicamente da JavaScript -->
+                    </tbody>
+                </table>
+
+                <button id="add-row" class="btn-ghost">
+                    <i class="ri-add-line"></i> Aggiungi Riga Articolo
+                </button>
+            </main>
+
+            <!-- FOOTER CON CALCOLI -->
+            <footer class="footer-grid">
+                <div class="footer-left">
+                    <div class="magic-square">
+                        <label class="label-tiny">CALCOLO AUTOMATICO</label>
+                        <input type="number" id="forced-total" class="input-magic" placeholder="Totale desiderato" step="0.01">
+                        <p class="magic-hint">Il sistema calcola automaticamente lo sconto o aggiustamento necessario per raggiungere il totale specificato.</p>
+                    </div>
+                </div>
+
+                <div class="footer-right">
+                    <div class="math-row">
+                        <span>Imponibile</span>
+                        <span id="res-subtotal">0.00€</span>
+                    </div>
+                    
+                    <div class="math-row">
+                        <span>Totale IVA</span>
+                        <span id="res-tax">0.00€</span>
+                    </div>
+                    
+                    <div id="adj-display">
+                        <!-- Aggiustamento verrà inserito qui dinamicamente -->
+                    </div>
+
+                    <div class="total-row">
+                        <span>TOTALE DOCUMENTO</span>
+                        <span id="res-total">0.00€</span>
+                    </div>
+                </div>
+            </footer>
+
+            <!-- AZIONI PRINCIPALI -->
+            <div class="actions-dock">
+                <button id="btn-pdf-prev" class="btn-primary-glitch">
+                    <i class="ri-file-download-line"></i> Genera e Scarica PDF
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- MODAL ESPORTAZIONE -->
+    <div id="export-modal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3><i class="ri-download-cloud-line"></i> Esportazione Documento</h3>
+                <button id="close-modal" class="btn-icon">
+                    <i class="ri-close-line"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="modal-warning" class="warning-box hidden">
+                    <i class="ri-alert-line"></i>
+                    <div>
+                        <p style="margin: 0; font-weight: 600;">Attenzione: Aggiustamento applicato</p>
+                        <p style="margin: 4px 0 0 0; font-size: 12px;">Stai applicando uno <strong id="warn-type">sconto</strong> di <strong id="warn-value">0.00€</strong> sul totale.</p>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Nome file PDF</label>
+                    <div class="file-input-wrapper">
+                        <input type="text" id="filename-input" value="Preventivo">
+                        <span class="extension">.pdf</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btn-cancel" class="btn-secondary">
+                    <i class="ri-close-line"></i> Annulla
+                </button>
+                <button id="btn-confirm-export" class="modal-export-btn">
+                    <i class="ri-download-line"></i> Genera PDF
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <script type="module" src="app.js"></script>
+</body>
+</html>
